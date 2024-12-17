@@ -1,0 +1,38 @@
+{
+  "cli": {
+    "version": ">= 10.2.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+
+      "env": {
+        "REACT_APP_BASE_URL": "http://194.233.87.22:1001/api"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "REACT_APP_BASE_URL": "http://194.233.87.22:1001/api"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "REACT_APP_BASE_URL": "http://194.233.87.22:1001/api"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
