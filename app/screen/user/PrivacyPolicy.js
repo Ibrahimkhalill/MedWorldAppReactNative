@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     color: "black",
     lineHeight: 30,
     fontWeight: "400",
-    textAlign: "left",
+    textAlign: "justify",
   },
   smallText: {
     fontSize: 20,

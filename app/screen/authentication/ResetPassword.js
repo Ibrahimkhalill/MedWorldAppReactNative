@@ -13,7 +13,7 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import axiosInstance from "../component/axiosInstance";
 import PopUp from "../PopUp";
 
-function ResetPassWord({route, navigation }) {
+function ResetPassWord({ route, navigation }) {
   const { email } = route.params || {};
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -135,6 +135,7 @@ function ResetPassWord({route, navigation }) {
             <FeatherIcon name="lock" size={20} color="gray" className="ml-3" />
             <TextInput
               className="flex-1 p-2 text-gray-600 text-[16px]"
+              placeholderTextColor="#888888"
               placeholder="Enter password"
               onChangeText={handlePasswordChange}
               value={newPassword}
@@ -164,6 +165,7 @@ function ResetPassWord({route, navigation }) {
             <FeatherIcon name="lock" size={20} color="gray" className="ml-3" />
             <TextInput
               className="flex-1 p-2 text-gray-600 text-[16px]"
+              placeholderTextColor="#888888"
               placeholder="Confirm password"
               onChangeText={handleConfirmPasswordChange}
               value={confirmPassword}

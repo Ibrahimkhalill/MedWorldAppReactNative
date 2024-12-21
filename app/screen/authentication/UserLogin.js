@@ -14,8 +14,8 @@ import {
   Keyboard,
 } from "react-native";
 
-import Icon from "react-native-vector-icons/Ionicons"; // Username icon
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // Username icon
+import Icon from "react-native-vector-icons/Ionicons"; // Password icon
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // Email icon
 import axiosInstance from "../component/axiosInstance";
 import { useAuth } from "./Auth";
 import ErrorModal from "../component/ErrorModal";
@@ -27,7 +27,7 @@ function UserLogin({ navigation }) {
   const [passwordVisible, setPasswordVisible] = useState(false); // For password visibility toggle
   const [errorVisible, setErrorVisible] = useState(false);
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { login, token } = useAuth();
 
   const [errors, setErrors] = useState({
     userName: "",
@@ -40,11 +40,40 @@ function UserLogin({ navigation }) {
     return regex.test(email);
   };
 
+  // Handle Username Change with Real-time Validation
+  const handleUserNameChange = (text) => {
+    setUserName(text);
+
+    // Validate Email
+    if (text === "") {
+      setErrors((prev) => ({ ...prev, userName: "Email cannot be empty" }));
+    } else if (!validateEmail(text)) {
+      setErrors((prev) => ({
+        ...prev,
+        userName: "Please enter a valid email address",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, userName: "" }));
+    }
+  };
+
+  // Handle Password Change with Real-time Validation
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+
+    // Validate Password Length
+    if (text === "") {
+      setErrors((prev) => ({ ...prev, password: "Password cannot be empty" }));
+    } else {
+      setErrors((prev) => ({ ...prev, password: "" }));
+    }
+  };
+
   const handleUserLogin = async () => {
+    // Final validation before submission
     let valid = true;
     const formErrors = { userName: "", password: "" };
 
-    // Validate fields
     if (userName === "") {
       formErrors.userName = "Email cannot be empty";
       valid = false;
@@ -58,7 +87,6 @@ function UserLogin({ navigation }) {
       valid = false;
     }
 
-    // Set errors if validation fails
     setErrors(formErrors);
 
     if (!valid) return;
@@ -70,11 +98,12 @@ function UserLogin({ navigation }) {
         email: userName,
         password: password,
       });
-   
+
       if (response.status === 200) {
         login(userName, response.data.token);
-
-        navigation.navigate("UserHome");
+        if (token) {
+          navigation.navigate("UserHome");
+        }
       } else {
         setErrorVisible(true);
         setError("Invalid username or password");
@@ -82,16 +111,17 @@ function UserLogin({ navigation }) {
     } catch (error) {
       if (error.response) {
         // If the server returned a response (e.g., 400 status)
-        const errorMessage = error.response.data.error || "Invalid request"; // Adjust based on your API structure
-        console.log("Server error:", error.response);
-        setErrorVisible(true);
-        // Display the error message in a toast or alert
-        setError(errorMessage); // Replace with your UI feedback mechanism
+        const serverErrors = error.response.data.error; // Adjust based on your API structure
+        const formErrors = { userName: "", password: "" };
 
-        // Optionally set it in state to display in the UI
+        setErrors(formErrors);
+        setErrorVisible(true);
+        setError(serverErrors);
       } else {
         // Handle other types of errors (e.g., network issues)
         console.log("Error without response:", error.message);
+        setErrorVisible(true);
+        setError("Network error. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -113,7 +143,12 @@ function UserLogin({ navigation }) {
       {/* Username Input */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>
-        <View style={styles.inputWrapper}>
+        <View
+          style={[
+            styles.inputWrapper,
+            errors.userName ? styles.errorInputWrapper : null,
+          ]}
+        >
           <MaterialCommunityIcons
             name="email-outline"
             size={20}
@@ -121,9 +156,14 @@ function UserLogin({ navigation }) {
           />
           <TextInput
             style={styles.input}
+            placeholderTextColor="#888888"
             placeholder="Enter Email"
             value={userName}
-            onChangeText={setUserName}
+            onChangeText={handleUserNameChange}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            accessibilityLabel="Email Input"
+            accessibilityRole="keyboardkey"
           />
         </View>
         {errors.userName ? (
@@ -134,14 +174,23 @@ function UserLogin({ navigation }) {
       {/* Password Input */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Password</Text>
-        <View style={styles.inputWrapper}>
+        <View
+          style={[
+            styles.inputWrapper,
+            errors.password ? styles.errorInputWrapper : null,
+          ]}
+        >
           <Icon name="lock-closed-outline" size={20} color="#B5B5B5" />
           <TextInput
             style={styles.input}
+            placeholderTextColor="#888888"
             placeholder="Enter your password"
             secureTextEntry={!passwordVisible}
             value={password}
-            onChangeText={setPassword}
+            onChangeText={handlePasswordChange}
+            autoCapitalize="none"
+            accessibilityLabel="Password Input"
+            accessibilityRole="keyboardkey"
           />
           <TouchableOpacity
             onPress={() => setPasswordVisible(!passwordVisible)}
@@ -179,11 +228,13 @@ function UserLogin({ navigation }) {
 
       {/* Already signed in? */}
       <View style={styles.alreadySignInContainer}>
-        <Text style={styles.alreadySignInText}>Don’t Have an account ? </Text>
+        <Text style={styles.alreadySignInText}>Don’t Have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate("UserSignup")}>
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Error Modal */}
       <ErrorModal
         message={error}
         isVisible={errorVisible}
@@ -205,7 +256,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   image: {
-    width: 160, // width of the image
+    width: 165, // width of the image
     height: 140, // height of the image
   },
   inputContainer: {
@@ -226,6 +277,9 @@ const styles = StyleSheet.create({
     borderColor: "#D1D5DB",
     paddingHorizontal: 10,
     height: 56,
+  },
+  errorInputWrapper: {
+    borderColor: "#E91111", // লাল রঙের হেক্স কোড
   },
   input: {
     flex: 1,
@@ -250,7 +304,7 @@ const styles = StyleSheet.create({
   loginButtonText: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#00000",
+    color: "#000000", // সঠিক রঙ কোড
   },
   alreadySignInContainer: {
     marginTop: 15,

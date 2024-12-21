@@ -106,6 +106,7 @@ function AddScientific({ navigation }) {
       if (response.status === 201) {
         notifyMessage(t("scientific_added"));
         clearForm();
+        navigation.navigate("ScientificDcoument");
       } else {
         notifyMessage(t("scientific_add_failed"));
       }

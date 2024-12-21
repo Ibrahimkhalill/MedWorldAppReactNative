@@ -4,21 +4,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Platform } from "react-native";
 import WelcomeScreen from "./app/screen/WelcomeScreen";
 import UserLogin from "./app/screen/authentication/UserLogin";
-import { MaterialIcons } from "@expo/vector-icons";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
-import Home from "./app/screen/admin/Home";
-import AllCustomer from "./app/screen/admin/AllCustomer";
-import CreateNewUser from "./app/screen/admin/CreateNewUser";
-import Glass from "./app/screen/admin/Glass";
-import MosquitoNetting from "./app/screen/admin/MosquitoNetting";
-import VatInstallation from "./app/screen/admin/VatInstallation";
-import MailData from "./app/screen/admin/MailData";
-import PhoneData from "./app/screen/admin/PhoneData";
 import { AuthProvider, useAuth } from "./app/screen/authentication/Auth";
 import Logout from "./app/screen/authentication/Logout";
 import AddScientific from "./app/screen/user/AddScientific";
@@ -49,7 +39,6 @@ import EditCourse from "./app/screen/user/EditCourse";
 import EidtSurgeries from "./app/screen/user/EidtSurgeries";
 import { I18nextProvider } from "react-i18next"; // Import the provider
 import i18n from "./app/screen/component/language/i18n"; // Import your i18n instance
-import { StripeProvider } from "@stripe/stripe-react-native";
 import { SubscriptionProvider } from "./app/screen/component/SubscriptionContext";
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -66,122 +55,7 @@ function AdminDrawer() {
         headerTintColor: "#fff",
       }}
       drawerContent={(props) => <Logout {...props} />}
-    >
-      <Drawer.Screen
-        name="Admin_Dashboard"
-        component={Home}
-        options={{
-          title: "Home",
-          drawerIcon: ({ focused }) => (
-            <MaterialIcons
-              name="home"
-              size={focused ? 25 : 25}
-              color={focused ? "#7cc" : "#ccc"}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="all_customer"
-        component={AllCustomer}
-        options={{
-          title: "All Customer",
-          drawerIcon: ({ focused }) => (
-            <MaterialIcons
-              name="people"
-              size={focused ? 25 : 25}
-              color={focused ? "#7cc" : "#ccc"}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="create_new_user"
-        component={CreateNewUser}
-        options={{
-          title: "User",
-          drawerIcon: ({ focused }) => (
-            <MaterialIcons
-              name="person-add"
-              size={focused ? 25 : 25}
-              color={focused ? "#7cc" : "#ccc"}
-            />
-          ),
-        }}
-      />
-
-      <Drawer.Screen
-        name="glass"
-        component={Glass}
-        options={{
-          title: "Glass",
-          drawerIcon: ({ focused }) => (
-            <MaterialIcons
-              name="window"
-              size={focused ? 25 : 25}
-              color={focused ? "#7cc" : "#ccc"}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="mosquito_netting"
-        component={MosquitoNetting}
-        options={{
-          title: "Mosquito Netting",
-          drawerIcon: ({ focused }) => (
-            <FontAwesome6
-              name="mosquito-net"
-              size={focused ? 20 : 20}
-              color={focused ? "#7cc" : "#ccc"}
-            />
-          ),
-        }}
-      />
-
-      <Drawer.Screen
-        name="vat_installation"
-        component={VatInstallation}
-        options={{
-          title: "Vat & Installation",
-          drawerIcon: ({ focused }) => (
-            <MaterialIcons
-              name="build"
-              size={focused ? 25 : 25}
-              color={focused ? "#7cc" : "#ccc"}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="mail_data"
-        component={MailData}
-        options={{
-          title: "Mail Data",
-          drawerIcon: ({ focused }) => (
-            <MaterialIcons
-              name="mail"
-              size={focused ? 25 : 25}
-              color={focused ? "#7cc" : "#ccc"}
-            />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="phone_data"
-        component={PhoneData}
-        options={{
-          title: "Phone Data",
-          drawerIcon: ({ focused }) => (
-            <MaterialIcons
-              name="phone"
-              size={focused ? 25 : 25}
-              color={focused ? "#7cc" : "#ccc"}
-            />
-          ),
-        }}
-      />
-    </Drawer.Navigator>
+    ></Drawer.Navigator>
   );
 }
 
@@ -340,23 +214,19 @@ function AppContent() {
 }
 
 export default function App() {
+ 
   return (
     <I18nextProvider i18n={i18n}>
-      <StripeProvider
-        publishableKey="pk_test_51QRTfHALRymUd61pQIlqCCDPqE2qT97tbKJUK2LGFisLHlpqWr6MqPMaz9HRXvjuDxvCVWsLAIQ8YbnoU46P3H8600tmZcy5rk"
-        merchantIdentifier=""
-      >
-        <AuthProvider>
-          <SubscriptionProvider>
-            <SafeAreaProvider>
-              <NavigationContainer>
-                <AppContent />
-              </NavigationContainer>
-              <StatusBar style="dark" backgroundColor="white" />
-            </SafeAreaProvider>
-          </SubscriptionProvider>
-        </AuthProvider>
-      </StripeProvider>
+      <AuthProvider>
+        <SubscriptionProvider>
+          <SafeAreaProvider>
+            <NavigationContainer>
+              <AppContent />
+            </NavigationContainer>
+            <StatusBar style="dark" backgroundColor="white" />
+          </SafeAreaProvider>
+        </SubscriptionProvider>
+      </AuthProvider>
     </I18nextProvider>
   );
 }

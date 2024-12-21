@@ -134,6 +134,7 @@ function AddBudget({ navigation }) {
       if (response.status === 201) {
         notifyMessage(t("budget_added_success"));
         clearForm();
+        navigation.navigate("BudgetDcoument");
       } else {
         notifyMessage(t("error_adding_budget"));
       }

@@ -1,26 +1,26 @@
 {
   "expo": {
-    "name": "WindoowDoorApp",
+    "name": "MedWorldApp",
     "slug": "MedWorldApp",
-    "scheme": "MedWorldApp",
+    "scheme": "medworldapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "splash": {
-      "image": "./app/assets/splash.jpg",
+      "image": "./app/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
-      "newArchEnabled": true
+      "bundleIdentifier": "com.aininja.MedWorldApp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./app/assets/adaptive-icon.jpg",
-        "backgroundColor": "#ffffff",
-        "newArchEnabled": true
-      }
+        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.aininja.MedWorldApp"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
@@ -28,6 +28,12 @@
     "updates": {
       "enabled": false
     },
-    "plugins": ["expo-font", "expo-localization"]
+
+    "plugins": ["expo-font", "expo-localization"],
+    "extra": {
+      "eas": {
+        "projectId": "835f8afe-b844-491a-a559-ff915c55419f"
+      }
+    }
   }
 }

@@ -10,7 +10,7 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import SimpleLineIcon from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -31,6 +31,7 @@ import QuotationPDF from "../QuotationPDF";
 import * as MediaLibrary from "expo-media-library";
 import * as Notifications from "expo-notifications";
 import { useSubscription } from "../component/SubscriptionContext";
+import exportDataToExcel from "../component/exportExcell";
 function CoursesDocument({ navigation }) {
   const { token } = useAuth();
   const { height } = Dimensions.get("window");
@@ -151,6 +152,17 @@ function CoursesDocument({ navigation }) {
     }
   };
 
+  const genarateExcell = () => {
+    const excel_data = data.map((item, index) => ({
+      "Serial No": index + 1,
+      Name: item.name,
+      Date: item.date.split("T")[0], // Splitting the date to only get the YYYY-MM-DD part
+    }));
+
+    const title = "Courses";
+    exportDataToExcel(excel_data, title);
+  };
+
   const fields = ["name", "date"];
 
   const handleCheck = () => {
@@ -158,6 +170,7 @@ function CoursesDocument({ navigation }) {
       if (subscription.free_trial_end) {
         // Free trial is still active
         generatePdf();
+        genarateExcell();
         return;
       } else {
         // Free trial has expired
@@ -181,6 +194,7 @@ function CoursesDocument({ navigation }) {
     if (subscription.is_active) {
       // Subscription is active
       generatePdf();
+      genarateExcell();
     } else {
       // Subscription has expired
       Alert.alert(
@@ -247,6 +261,7 @@ function CoursesDocument({ navigation }) {
       </View>
     );
   }
+
   return (
     <SafeAreaView style={styles.safeArea} className="px-5">
       <StatusBar style="dark" backgroundColor="white" />

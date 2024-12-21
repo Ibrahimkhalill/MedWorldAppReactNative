@@ -17,12 +17,10 @@ import {
 } from "react-native";
 import axiosInstance from "../component/axiosInstance";
 
-
 function ForgetPassWord({ navigation }) {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-
 
   function notifyMessage(msg) {
     if (Platform.OS === "android") {
@@ -62,7 +60,7 @@ function ForgetPassWord({ navigation }) {
         email,
       });
 
-      if (response.status===200) {
+      if (response.status === 200) {
         notifyMessage("OTP sent successfully. Please check your email.");
         navigation.navigate("ForgetPasswordOtp", {
           email: email,
@@ -117,6 +115,7 @@ function ForgetPassWord({ navigation }) {
           />
           <TextInput
             style={styles.input}
+            placeholderTextColor="#888888"
             placeholder="Enter email"
             onChangeText={handleOnchange}
             value={email}

@@ -53,7 +53,7 @@
   "national": "National",
   "role": "Role",
   "author": "Author",
-  "co_author": "Co-Author",
+  "co_author": "Co-Author's Names",
   "name": "Name",
   "name_placeholder": "Enter name",
   "co_author_placeholder": "Enter co-authors' names",
@@ -114,5 +114,8 @@
   "notification_histology": "Notifications regarding complications and histology information missing",
   "exportable_reports": "Exportable reports",
   "price": "1.99",
-  "percentage": "Percentage"
+  "percentage": "Percentage",
+  "update": "Update",
+  "residency_year": "Residency Year",
+  "residency_duration": "Residency Duration"
 }

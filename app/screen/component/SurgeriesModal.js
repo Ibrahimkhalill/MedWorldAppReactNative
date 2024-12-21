@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Modal, StyleSheet } from "react-native";
 import * as Animatable from "react-native-animatable";
 import CustomCheckbox from "./CheckBox";
 import YesSurgeryModal from "./YesSurgeryModal";
@@ -28,6 +23,7 @@ const SurgeriesModal = ({
   };
   const handleCheckboxChangeNo = (isChecked) => {
     if (isChecked) {
+      closeSurgeriesModal();
       navigation.navigate("AddSurgeries");
     }
   };

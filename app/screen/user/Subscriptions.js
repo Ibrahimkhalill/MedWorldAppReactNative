@@ -13,7 +13,6 @@ import {
 import { Ionicons, MaterialIcons } from "react-native-vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
-import { useStripe } from "@stripe/stripe-react-native";
 import { WebView } from "react-native-webview";
 
 import Navbar from "../component/Navbar";

@@ -33,6 +33,7 @@ import QuotationPDF from "../QuotationPDF";
 import * as MediaLibrary from "expo-media-library";
 import * as Notifications from "expo-notifications";
 import { useSubscription } from "../component/SubscriptionContext";
+import exportDataToExcel from "../component/exportExcell";
 function BudgetDcoument({ navigation }) {
   const [isDownload, setIsDownload] = useState(false);
   const { token } = useAuth();
@@ -152,7 +153,21 @@ function BudgetDcoument({ navigation }) {
       console.error("Error generating or downloading PDF:", error);
     }
   };
+  const genarateExcell = () => {
+    const excel_data = data.map((item, index) => ({
+      "Serial No": index + 1,
+      Category: item.category,
+      Name: item.name,
+      "Registration Fee": item.registration_fee,
+      "Travel Fee": item.travel_fee,
+      "Accommodation Expense": item.accommodation_expense,
+      total_fee: item.total_fee,
+      Date: item.date.split("T")[0], // Splitting the date to only get the YYYY-MM-DD part
+    }));
 
+    const title = "Budget";
+    exportDataToExcel(excel_data, title);
+  };
   fields = [
     "category",
     "name",
@@ -168,6 +183,7 @@ function BudgetDcoument({ navigation }) {
       if (subscription.free_trial_end) {
         // Free trial is still active
         generatePdf();
+        genarateExcell();
         return;
       } else {
         // Free trial has expired
@@ -191,6 +207,7 @@ function BudgetDcoument({ navigation }) {
     if (subscription.is_active) {
       // Subscription is active
       generatePdf();
+      genarateExcell();
     } else {
       // Subscription has expired
       Alert.alert(
@@ -214,7 +231,7 @@ function BudgetDcoument({ navigation }) {
       if (subscription.free_trial) {
         // Free trial is still active
         navigation.navigate("EditBudget", {
-          data: item,
+          budget: item,
         });
         return;
       } else {
@@ -240,7 +257,7 @@ function BudgetDcoument({ navigation }) {
     if (subscription.is_active) {
       // Subscription is active
       navigation.navigate("EditBudget", {
-        data: item,
+        budget: item,
       });
     } else {
       // Subscription has expired

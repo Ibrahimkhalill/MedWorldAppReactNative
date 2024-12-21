@@ -49,6 +49,8 @@ function Profile({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [imageUri, setImageUri] = useState(null);
 
+  const [isEdit, setIsEdit] = useState(false);
+
   const { subscription, fetchSubscription } = useSubscription();
 
   const insets = useSafeAreaInsets();
@@ -89,6 +91,7 @@ function Profile({ navigation }) {
 
       if (response.status === 200) {
         const data = response.data;
+        console.log(data);
         setEmail(data.email);
         setAddress(data.address);
         setResidencyDuration(data.residencyDuration);
@@ -130,8 +133,10 @@ function Profile({ navigation }) {
   const updatedProfileData = async () => {
     setIsLoading(true);
     const formData = new FormData();
+    console.log("f", imageUri);
 
     if (imageUri) {
+      console.log("ft", imageUri);
       formData.append("profile_picture", {
         uri: imageUri,
         name: `photo_${Date.now()}.jpg`,
@@ -147,17 +152,18 @@ function Profile({ navigation }) {
     formData.append("gender", gender);
     formData.append("username", userName);
     formData.append("specialty", specialty);
+    console.log("formData", formData);
 
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await axiosInstance.patch("/user_profile/", formData, {
+      const response = await axiosInstance.put("/user_profile/", formData, {
         headers: {
           Authorization: `Token ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
-
+      console.log("formData re", response);
       if (response.status === 200) {
         Alert.alert(t("profile_updated"));
         fetchProfileData();
@@ -269,7 +275,7 @@ function Profile({ navigation }) {
                     source={
                       imageUri
                         ? { uri: imageUri } // Show selected image
-                        : require("../../assets/profile.png") // Default image
+                        : { uri: `http://209.38.159.136${profile_picture}` } // Default image
                     }
                     style={styles.Profileimage}
                   />
@@ -288,14 +294,14 @@ function Profile({ navigation }) {
                   {userData.username}
                 </Text>
                 <TouchableOpacity className="bg-[#FCE488] w-[166px] h-[37px] rounded-[400px] flex items-center justify-center flex-row ">
-                  {subscription.is_active && (
+                  {subscription?.is_active && (
                     <Image
                       source={require("../../assets/premium.png")} // Your logo path
                       style={styles.icon}
                     />
                   )}
                   <Text className="text-[14px] font-[600] ml-2">
-                    {subscription.is_active
+                    {subscription?.is_active
                       ? "Premium account"
                       : "Free Account"}
                   </Text>
@@ -307,6 +313,7 @@ function Profile({ navigation }) {
               <View style={styles.inputWrapper}>
                 <TextInput
                   style={styles.input}
+                  editable={isEdit}
                   value={userName}
                   onChangeText={setUserName}
                 />
@@ -317,6 +324,7 @@ function Profile({ navigation }) {
               <MaterialCommunityIcons name="email" size={20} color="#B5B5B5" />
               <TextInput
                 style={styles.input}
+                editable={isEdit}
                 placeholder={t("placeholder_email")}
                 value={email}
               />
@@ -328,9 +336,34 @@ function Profile({ navigation }) {
             <View style={styles.inputWrapper}>
               <TextInput
                 style={styles.input}
+                editable={isEdit}
                 placeholder={t("placeholder_speciality")}
                 value={specialty}
                 onChangeText={setSpecialty}
+              />
+            </View>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t("residency_duration")}</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                editable={isEdit}
+                placeholder={t("placeholder_speciality")}
+                value={residencyDuration}
+                onChangeText={setResidencyDuration}
+              />
+            </View>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t("residency_year")}</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                editable={isEdit}
+                placeholder={t("placeholder_speciality")}
+                value={residencyYear}
+                onChangeText={setResidencyYear}
               />
             </View>
           </View>
@@ -345,6 +378,7 @@ function Profile({ navigation }) {
               />
               <TextInput
                 style={styles.input}
+                editable={isEdit}
                 placeholder={t("placeholder_phone_number")}
                 value={phone_number}
                 onChangeText={setPhone_number}
@@ -359,6 +393,7 @@ function Profile({ navigation }) {
               <SimpleLineIcons name="location-pin" size={20} color="#B5B5B5" />
               <TextInput
                 style={styles.input}
+                editable={isEdit}
                 placeholder={t("placeholder_address")}
                 value={address}
                 onChangeText={setAddress}
@@ -376,20 +411,42 @@ function Profile({ navigation }) {
               />
               <TextInput
                 style={styles.input}
+                editable={isEdit}
                 placeholder={t("placeholder_gender")}
                 value={gender}
                 onChangeText={setGender}
               />
             </View>
           </View>
-
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={handleCheck}
-            disabled={isLoading}
-          >
-            <Text style={styles.loginButtonText}>{t("edit_profile")}</Text>
-          </TouchableOpacity>
+          {isEdit ? (
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={handleCheck}
+                disabled={isLoading}
+              >
+                <Text style={styles.loginButtonText}>{t("update")}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.editButton,
+                  { backgroundColor: "#ccc", marginLeft: 4 },
+                ]}
+                onPress={() => setIsEdit(false)}
+              >
+                <Text style={styles.loginButtonText}>{t("Cancel")}</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={() => setIsEdit(true)}
+            >
+              <Text style={styles.loginButtonText}>{t("Edit Profile")}</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
       {!isKeyboardVisible && <NavigationBar navigation={navigation} />}
@@ -501,6 +558,15 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: "100%",
+    height: 50,
+    backgroundColor: "#FFDC58", // Button color
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 30,
+    marginTop: 5,
+  },
+  editButton: {
+    width: "48%",
     height: 50,
     backgroundColor: "#FFDC58", // Button color
     justifyContent: "center",

@@ -50,6 +50,7 @@ function EditBudget({ navigation, route }) {
       alert(msg);
     }
   }
+console.log("params.budget",params.budget);
 
   // Prefill data when navigating to this screen
   useEffect(() => {

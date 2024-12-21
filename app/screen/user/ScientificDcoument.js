@@ -10,7 +10,7 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import SimpleLineIcon from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -33,6 +33,7 @@ import QuotationPDF from "../QuotationPDF";
 import * as MediaLibrary from "expo-media-library";
 import * as Notifications from "expo-notifications";
 import { useSubscription } from "../component/SubscriptionContext";
+import exportDataToExcel from "../component/exportExcell";
 
 function ScientificDcoument({ navigation }) {
   const { height } = Dimensions.get("window");
@@ -153,6 +154,22 @@ function ScientificDcoument({ navigation }) {
     }
   };
 
+  const genarateExcell = () => {
+    const excel_data = data.map((item, index) => ({
+      "Serial No": index + 1,
+      "Types Of Works": item.types_works,
+      International: item.international,
+      National: item.national,
+      Role: item.role,
+      Name: item.name,
+      "Co Author Names": item.co_author_names,
+      Date: item.date.split("T")[0], // Splitting the date to only get the YYYY-MM-DD part
+    }));
+
+    const title = "Scientific";
+    exportDataToExcel(excel_data, title);
+  };
+
   const fields = [
     "types_works",
     "international",
@@ -168,6 +185,7 @@ function ScientificDcoument({ navigation }) {
       if (subscription.free_trial_end) {
         // Free trial is still active
         generatePdf();
+        genarateExcell();
         return;
       } else {
         // Free trial has expired
@@ -191,6 +209,7 @@ function ScientificDcoument({ navigation }) {
     if (subscription.is_active) {
       // Subscription is active
       generatePdf();
+      genarateExcell();
     } else {
       // Subscription has expired
       Alert.alert(

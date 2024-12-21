@@ -118,5 +118,8 @@
   "notification_histology": "Notificações sobre complicações e informações histológicas ausentes",
   "exportable_reports": "Relatórios exportáveis",
   "price": "1.99",
-  "percentage": "Percentagem"
+  "percentage": "Percentagem",
+  "update": "Atualizar",
+  "residency_year": "ano de residência",
+  "residency_duration": "duração da residência"
 }

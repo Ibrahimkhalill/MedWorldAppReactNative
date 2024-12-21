@@ -81,6 +81,7 @@ function AddSurgeries({ route, navigation }) {
       if (response.status === 201) {
         notifyMessage(t("surgery_added_success"));
         clearForm();
+        navigation.navigate("SurgergeryDcoument");
       } else {
         notifyMessage(t("error_adding_surgery"));
       }
@@ -166,69 +167,69 @@ function AddSurgeries({ route, navigation }) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={handleOutsidePress}>
-      <SafeAreaView style={styles.safeAreaContainer} className="px-5">
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          style={{ flexGrow: 1 }}
-        >
-          <Navbar navigation={navigation} navigation_Name={"UserHome"} />
-          <View className="flex flex-row gap-3 my-3 mb-5">
-            <TouchableOpacity
-              className=" py-1"
-              onPress={() => navigation.navigate("AddScientific")}
-            >
-              <Text style={styles.navButtonText}>Scientific</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="border-b-4 border-[#FFDC58] py-1">
-              <Text style={styles.navButtonText}>Surgeries</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className=" py-1"
-              onPress={() => navigation.navigate("AddCourses")}
-            >
-              <Text style={styles.navButtonText}>Courses</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className=" py-1"
-              onPress={() => navigation.navigate("AddBudget")}
-            >
-              <Text style={styles.navButtonText}>Budget</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.container}>
-            <View style={styles.inputContainerDouble}>
-              <View style={styles.inputContainerFirst}>
-                <Text style={styles.label}>{t("field_of_surgery")}</Text>
-                <TextInput
-                  style={styles.input}
-                  value={fieldOfSurgery}
-                  onChangeText={setFieldOfSurgery}
-                />
-              </View>
-              <View style={styles.inputContainerFirst}>
-                <Text style={styles.label}>{t("date")}</Text>
-                <CustomDatePicker
-                  onDateChange={setDate}
-                  date={date}
-                  setDate={setDate}
-                />
-              </View>
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t("surgery_name")}</Text>
+    <SafeAreaView style={styles.safeAreaContainer} className="px-5">
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        scrollEnabled={true} // Ensure scrolling is enabled
+        nestedScrollEnabled={true} // Allow nested scrollable components to work
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }} // Proper padding for content
+        style={{ flex: 1 }} // Ensure full height usage
+      >
+        <Navbar navigation={navigation} navigation_Name={"UserHome"} />
+        <View className="flex flex-row gap-3 my-3 mb-5">
+          <TouchableOpacity
+            className=" py-1"
+            onPress={() => navigation.navigate("AddScientific")}
+          >
+            <Text style={styles.navButtonText}>Scientific</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="border-b-4 border-[#FFDC58] py-1">
+            <Text style={styles.navButtonText}>Surgeries</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className=" py-1"
+            onPress={() => navigation.navigate("AddCourses")}
+          >
+            <Text style={styles.navButtonText}>Courses</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className=" py-1"
+            onPress={() => navigation.navigate("AddBudget")}
+          >
+            <Text style={styles.navButtonText}>Budget</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.container}>
+          <View style={styles.inputContainerDouble}>
+            <View style={styles.inputContainerFirst}>
+              <Text style={styles.label}>{t("field_of_surgery")}</Text>
               <TextInput
                 style={styles.input}
-                value={surgeryName}
-                onChangeText={handleInputChange}
+                value={fieldOfSurgery}
+                onChangeText={setFieldOfSurgery}
               />
-              {isDropdownVisible && surgerySuggestions.length > 0 && (
-                <ScrollView
-                  style={styles.suggestionsContainer}
-                  nestedScrollEnabled={true} // Allow nested scrolling
-                >
+            </View>
+            <View style={styles.inputContainerFirst}>
+              <Text style={styles.label}>{t("date")}</Text>
+              <CustomDatePicker
+                onDateChange={setDate}
+                date={date}
+                setDate={setDate}
+              />
+            </View>
+          </View>
+
+          <View style={[styles.inputContainer, { position: "relative" }]}>
+            <Text style={styles.label}>{t("surgery_name")}</Text>
+            <TextInput
+              style={styles.input}
+              value={surgeryName}
+              onChangeText={handleInputChange}
+            />
+            {isDropdownVisible && surgerySuggestions.length > 0 && (
+              <View style={styles.suggestionsContainer}>
+                <ScrollView nestedScrollEnabled={true}>
                   {surgerySuggestions.map((item, index) => (
                     <TouchableOpacity
                       key={index.toString()}
@@ -239,122 +240,122 @@ function AddSurgeries({ route, navigation }) {
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
-              )}
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t("type_of_surgery")}</Text>
-              <TextInput
-                style={styles.input}
-                value={typeOfSurgery}
-                onChangeText={setTypeOfSurgery}
-              />
-            </View>
-            <View style={styles.inputContainerDouble}>
-              <View style={styles.inputContainerFirst}>
-                <Text style={styles.labelFirst}>{t("main_surgeon")}</Text>
-                <View style={{ flexDirection: "row" }}>
-                  <CustomCheckbox
-                    label="Yes"
-                    onValueChange={() => setMainSurgeon(true)}
-                    value={mainSurgeon === true}
-                  />
-                  <View className="ml-3">
-                    <CustomCheckbox
-                      label="No"
-                      onValueChange={() => setMainSurgeon(false)}
-                      value={mainSurgeon === false}
-                    />
-                  </View>
-                </View>
               </View>
-              <View style={styles.inputContainerFirst}>
-                <Text style={styles.labelFirst}>{t("histology")}</Text>
-                <View style={{ flexDirection: "row" }}>
-                  <CustomCheckbox
-                    label="Yes"
-                    onValueChange={() => setHistology(true)}
-                    value={histology == true}
-                  />
-                  <View className="ml-3">
-                    <CustomCheckbox
-                      label="No"
-                      onValueChange={() => setHistology(false)}
-                      value={histology === false}
-                    />
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View style={styles.inputContainerDouble}>
-              <View style={styles.inputContainerFirst}>
-                <Text style={styles.labelFirst}>{t("complications")}</Text>
-
-                <View className="flex  flex-row ">
-                  <CustomCheckbox
-                    label="Yes"
-                    onValueChange={() => setComplications(true)}
-                    value={complications === true}
-                  />
-                  <View className="ml-3">
-                    <CustomCheckbox
-                      label="NO"
-                      onValueChange={() => setComplications(false)}
-                      value={complications === false}
-                    />
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t("histology_description")}</Text>
-              <TextInput
-                style={styles.textArea}
-                multiline
-                value={histologyDescription}
-                onChangeText={setHistologyDescription}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t("complication_description")}</Text>
-              <TextInput
-                style={styles.textArea}
-                multiline
-                value={complicationDescription}
-                onChangeText={setComplicationDescription}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t("notes_1")}</Text>
-              <TextInput
-                style={styles.textArea}
-                multiline
-                value={notes1}
-                onChangeText={setNotes1}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>{t("notes_2")}</Text>
-              <TextInput
-                style={styles.textArea}
-                multiline
-                value={notes2}
-                onChangeText={setNotes2}
-              />
-            </View>
-
-            <TouchableOpacity style={styles.loginButton} onPress={handleSave}>
-              <Text style={styles.loginButtonText}>
-                {isLoading ? t("saving") : t("save")}
-              </Text>
-            </TouchableOpacity>
+            )}
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t("type_of_surgery")}</Text>
+            <TextInput
+              style={styles.input}
+              value={typeOfSurgery}
+              onChangeText={setTypeOfSurgery}
+            />
+          </View>
+          <View style={styles.inputContainerDouble}>
+            <View style={styles.inputContainerFirst}>
+              <Text style={styles.labelFirst}>{t("main_surgeon")}</Text>
+              <View style={{ flexDirection: "row" }}>
+                <CustomCheckbox
+                  label="Yes"
+                  onValueChange={() => setMainSurgeon(true)}
+                  value={mainSurgeon === true}
+                />
+                <View className="ml-3">
+                  <CustomCheckbox
+                    label="No"
+                    onValueChange={() => setMainSurgeon(false)}
+                    value={mainSurgeon === false}
+                  />
+                </View>
+              </View>
+            </View>
+            <View style={styles.inputContainerFirst}>
+              <Text style={styles.labelFirst}>{t("histology")}</Text>
+              <View style={{ flexDirection: "row" }}>
+                <CustomCheckbox
+                  label="Yes"
+                  onValueChange={() => setHistology(true)}
+                  value={histology == true}
+                />
+                <View className="ml-3">
+                  <CustomCheckbox
+                    label="No"
+                    onValueChange={() => setHistology(false)}
+                    value={histology === false}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+          <View style={styles.inputContainerDouble}>
+            <View style={styles.inputContainerFirst}>
+              <Text style={styles.labelFirst}>{t("complications")}</Text>
+
+              <View className="flex  flex-row ">
+                <CustomCheckbox
+                  label="Yes"
+                  onValueChange={() => setComplications(true)}
+                  value={complications === true}
+                />
+                <View className="ml-3">
+                  <CustomCheckbox
+                    label="NO"
+                    onValueChange={() => setComplications(false)}
+                    value={complications === false}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t("histology_description")}</Text>
+            <TextInput
+              style={styles.textArea}
+              multiline
+              value={histologyDescription}
+              onChangeText={setHistologyDescription}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t("complication_description")}</Text>
+            <TextInput
+              style={styles.textArea}
+              multiline
+              value={complicationDescription}
+              onChangeText={setComplicationDescription}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t("notes_1")}</Text>
+            <TextInput
+              style={styles.textArea}
+              multiline
+              value={notes1}
+              onChangeText={setNotes1}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t("notes_2")}</Text>
+            <TextInput
+              style={styles.textArea}
+              multiline
+              value={notes2}
+              onChangeText={setNotes2}
+            />
+          </View>
+
+          <TouchableOpacity style={styles.loginButton} onPress={handleSave}>
+            <Text style={styles.loginButtonText}>
+              {isLoading ? t("saving") : t("save")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -388,13 +389,21 @@ const styles = StyleSheet.create({
     height: 80, // height of the image
   },
   suggestionsContainer: {
-    borderWidth: 1,
-
-    borderRadius: 8,
-    maxHeight: 150, // Limit the height for overflow
+    position: "absolute",
+    top: 80, // Adjust based on input height
+    left: 0,
+    right: 0,
     backgroundColor: "#fff",
-    zIndex: 1,
-    maxHeight: 150, // Limit the height to make it scrollable
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 8,
+    maxHeight: 150, // Limit height for scrolling
+    zIndex: 1000, // Ensure it's above other elements
+    elevation: 5, // Shadow for Android
+    shadowColor: "#000", // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   suggestionItem: {
     padding: 12,

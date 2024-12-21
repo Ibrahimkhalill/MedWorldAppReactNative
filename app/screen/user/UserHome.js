@@ -40,6 +40,7 @@ function UserHome({ navigation }) {
   const [completeSurgeries, setCompleteSurgeries] = useState([]);
   const [incompleteSurgeries, setIncompleteSurgeries] = useState([]);
   const { subscription, loading, error, fetchSubscription } = useSubscription();
+  
 
   useFocusEffect(
     React.useCallback(() => {

@@ -1,23 +1,20 @@
 import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  Platform,
-} from "react-native";
+import { Image, StyleSheet, Text, View, Platform } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 function WelcomeScreen({ navigation }) {
-  useEffect(() => {
-    // Automatically navigate to the UserHome page after 3 seconds
-    const timer = setTimeout(() => {
-      navigation.navigate("UserHome");
-    }, 3000);
+  useFocusEffect(
+    React.useCallback(() => {
+      // Automatically navigate to the UserHome page after 3 seconds
+      const timer = setTimeout(() => {
+        navigation.navigate("UserHome");
+      }, 3000);
 
-    // Cleanup timeout to avoid memory leaks
-    return () => clearTimeout(timer);
-  }, [navigation]);
+      // Cleanup timeout to avoid memory leaks
+      return () => clearTimeout(timer);
+    }, [])
+  );
 
   return (
     <View

@@ -23,7 +23,7 @@ function OTP({ route, navigation }) {
   const [timeLeft, setTimeLeft] = useState(120);
   const inputRefs = useRef([]);
 
-  const { login } = useAuth();
+  const { login, token } = useAuth();
 
   useEffect(() => {
     if (timeLeft === 0) return;
@@ -61,7 +61,9 @@ function OTP({ route, navigation }) {
       });
       if (response.status === 201) {
         login(formData.userName, response.data.token);
-        navigation.navigate("WELCOME");
+        if (token) {
+          navigation.navigate("UserHome");
+        }
       }
     } catch (error) {
       console.log("Error: " + error.message);

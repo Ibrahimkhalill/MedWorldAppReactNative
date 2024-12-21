@@ -90,6 +90,7 @@ function AddCourses({ navigation }) {
       if (response.status === 201) {
         notifyMessage(t("course_added_success"));
         clearForm();
+        navigation.navigate("CoursesDocument");
       } else {
         notifyMessage(t("error_adding_course"));
       }

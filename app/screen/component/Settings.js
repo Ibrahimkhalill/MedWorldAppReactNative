@@ -21,15 +21,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Navbar from "../component/Navbar";
 import NavigationBar from "../component/BottomTabNavigator";
 import CustomSelector from "../component/CustomSelector";
-import SettingModal from "../component/SettingModal";
+import DeleteModal from "./DeleteModal";
 import { useAuth } from "../authentication/Auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
+import LogoutModal from "./LogoutModal";
+import UserLogin from "../authentication/UserLogin";
 
 const { height } = Dimensions.get("window"); // Get screen height
 const scrollViewHeight = height * 0.8;
 const Settings = ({ navigation }) => {
   const [isEnabled, setIsEnabled] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [Language, setLanguage] = useState("English");
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isDelete, setIsdelete] = useState(false);
@@ -176,8 +179,7 @@ const Settings = ({ navigation }) => {
               <TouchableOpacity
                 style={styles.option}
                 onPress={() => {
-                  logout();
-                  navigation.navigate("UserLogin");
+                  setDeleteModalVisible(true);
                 }}
               >
                 <View
@@ -274,9 +276,14 @@ const Settings = ({ navigation }) => {
         </View>
       </ScrollView>
       <NavigationBar navigation={navigation} />
-      <SettingModal
+      <DeleteModal
         setIsVisible={setIsdelete}
         isVisible={isDelete}
+        navigation={navigation}
+      />
+      <LogoutModal
+        isVisible={deleteModalVisible}
+        setIsVisible={setDeleteModalVisible}
         navigation={navigation}
       />
     </SafeAreaView>

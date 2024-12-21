@@ -10,73 +10,54 @@ import {
 import * as Animatable from "react-native-animatable";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useAuth } from "../authentication/Auth";
-const SettingModal = ({ isVisible, setIsVisible, navigation }) => {
-  const closeSettingModal = () => {
+const LogoutModal = ({ isVisible, setIsVisible, navigation }) => {
+  const closeLogoutModal = () => {
     setIsVisible(false);
   };
 
-  const { token } = useAuth();
+  const { logout, token } = useAuth();
 
-  const handleDelete = async () => {
-    try {
-      const response = await axiosInstance.delete(
-        `/delete_user_and_related_data/`,
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        }
-      );
-      console.log(response);
-
-      if (response.status === 200) {
-        Alert.alert("Success", "Account deleted successfully.");
-        navigation.navigate("UserLogin");
-      }
-    } catch (error) {
-      console.error("Error deleting surgery:", error);
-      Alert.alert("Error", "Could not delete surgery. Please try again later.");
+  const handleLogout = () => {
+    logout();
+    if (!token) {
+      navigation.navigate("UserLogin");
     }
   };
+
   return (
     <View className=" justify-center items-center ">
-      {/* SettingModal */}
+      {/* LogoutModal */}
       <Modal
         animationType="fade"
         transparent={true}
         visible={isVisible}
-        onRequestClose={closeSettingModal}
+        onRequestClose={closeLogoutModal}
       >
         <View className="flex-1 justify-center items-center bg-black/50">
-          {/* Animated SettingModal */}
+          {/* Animated LogoutModal */}
           <Animatable.View
             animation="zoomIn"
             duration={500} // Animation duration (milliseconds)
             easing="ease-out" // Optional easing
             style={styles.container}
           >
-            <Text style={styles.header}>Delete</Text>
+            <Text style={styles.header}>Logout</Text>
             <View style={{ marginTop: 20 }}>
-              <Text style={styles.second_text}>
-                Do you want to delete your account ??
-              </Text>
-              <Text style={styles.second_text}>
-                It will permanently delete your al user data.
-              </Text>
+              <Text style={styles.second_text}>Are you confirm to logout?</Text>
             </View>
 
             <TouchableOpacity
-              onPress={handleDelete}
+              onPress={handleLogout}
               style={styles.button_first}
             >
               <Text
                 style={{ fontSize: 16, textAlign: "center", color: "#ffff" }}
               >
-                DELETE
+                LOGOUT
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={closeSettingModal}
+              onPress={closeLogoutModal}
               style={styles.button_second}
             >
               <Text
@@ -128,4 +109,4 @@ const styles = StyleSheet.create({
     borderColor: "#FFDC58",
   },
 });
-export default SettingModal;
+export default LogoutModal;

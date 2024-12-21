@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
+import XLSX from "xlsx";
+
 import {
   Image,
   Text,
@@ -132,9 +134,52 @@ function SurgergeruDcoument({ navigation }) {
       console.error("Error generating or downloading PDF:", error);
     }
   };
+  const exportDataToExcel = async () => {
+    // Sample data
+    const excel_data = data.map((item, index) => ({
+      "Serial No": index + 1,
+      "Surgery Name": item.name_of_surgery,
+      "Field Of Surgery": item.field_of_surgery,
+      "Type Of Surgery": item.type_of_surgery,
+      Complications: item.complications,
+      Histology: item.histology,
+      "Main Surgeon": item.main_surgeon,
+      "Histology Description": item.histology_description,
+      "Complications Description": item.complications_description,
+      Notes1: item.notes1,
+      Notes2: item.notes2,
+      Date: item.date.split("T")[0], // Splitting the date to only get the YYYY-MM-DD part
+    }));
+    // Create a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(excel_data);
 
+    // Create a workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    // Write the Excel file as a base64 string
+    const excelFile = XLSX.write(workbook, {
+      type: "base64",
+      bookType: "xlsx",
+    });
+
+    // Define file path
+    const fileUri = `${FileSystem.documentDirectory}SurgeryReport.xlsx`;
+
+    // Save the file
+    await FileSystem.writeAsStringAsync(fileUri, excelFile, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    // Share the file
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(fileUri);
+    } else {
+      Alert.alert("Exported", "File saved successfully!", [{ text: "OK" }]);
+    }
+  };
   const fields = [
-    "surgery_name",
+    "name_of_surgery",
     "field_of_surgery",
     "type_of_surgery",
     "complications",
@@ -151,6 +196,7 @@ function SurgergeruDcoument({ navigation }) {
       if (subscription.free_trial_end) {
         // Free trial is still active
         generatePdf();
+        exportDataToExcel();
         return;
       } else {
         // Free trial has expired
@@ -174,6 +220,7 @@ function SurgergeruDcoument({ navigation }) {
     if (subscription.is_active) {
       // Subscription is active
       generatePdf();
+      exportDataToExcel();
     } else {
       // Subscription has expired
       Alert.alert(
